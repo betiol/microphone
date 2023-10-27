@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import AudioRecorder from "./AudioRecorder"; // Importe o componente AudioRecorder
+import Waveform from "./WaveForm"; // Importe o componente Waveform
+import { Button } from "@chakra-ui/react";
 
-function App() {
+const App = () => {
+  const [audioUrl, setAudioUrl] = useState(null);
+
+  const handleAudioRecorded = (recordedBlob) => {
+    setAudioUrl(URL.createObjectURL(recordedBlob.blob));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Gravador de Áudio</h1>
+      <AudioRecorder onAudioRecorded={handleAudioRecorded} />
+
+      {audioUrl && (
+        <div>
+          <h2>Áudio Gravado</h2>
+          <Waveform url={audioUrl} />
+        </div>
+      )}
+
+      <Button onClick={() => setAudioUrl(null)}>Limpar</Button>
     </div>
   );
-}
+};
 
 export default App;
