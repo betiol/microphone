@@ -16,24 +16,12 @@ const Waveform = ({ url }) => {
         barGap: 2,
         barWidth: 3,
         barRadius: 3,
+        width: 100,
         cursorWidth: 3,
         cursorColor: "#567FFF",
         plugins: [WaveformRegionsPlugin.create({ maxLength: 90 })] // Importe o plugin corretamente
       });
       waveform.current.load(url);
-
-      // waveform.current.enableDragSelection({
-      //   maxLength: 90
-      // });
-
-      // waveform.current.on("region-created", (e) => {
-      //   let color = randomColor({
-      //     luminosity: "light",
-      //     alpha: 0.3,
-      //     format: "rgba"
-      //   });
-      //   e.color = color;
-      // });
     }
   }, []);
 
@@ -54,14 +42,12 @@ const Waveform = ({ url }) => {
   };
 
   return (
-    <Flex flexDirection="column" w="100%">
+    <>
       <div id="waveform" />
-      <Flex flexDirection="row" justifyContent="center">
-        <Button m="4" onClick={playAudio}>
-          Play / Pause
-        </Button>
-      </Flex>
-    </Flex>
+      <Button m="4" onClick={playAudio}>
+        Play / Pause
+      </Button>
+    </>
   );
 };
 

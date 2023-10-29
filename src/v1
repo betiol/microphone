@@ -6,48 +6,26 @@ const AudioRecorder = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [waveform, setWaveform] = useState(null);
-  const mediaRecorderRef = React.useRef(null);
 
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
-      const chunks = [];
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          chunks.push(e.data);
-        }
-      };
-
-      mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(chunks, { type: "audio/wav" });
-        console.log({ audioBlob });
-        const audioUrl = URL.createObjectURL(audioBlob);
-
-        if (waveform) {
-          waveform.load(audioUrl);
-        }
-
-        setIsRecording(false);
-      };
-
-      mediaRecorder.start();
-      setIsRecording(true);
-
-      setTimeout(() => {
-        stopRecording();
-      }, 5000);
-
-      mediaRecorderRef.current = mediaRecorder;
+      if (waveform) {
+        waveform.microphone.start();
+        setIsRecording(true);
+      }
     } catch (error) {
       console.error("Erro ao iniciar a gravação:", error);
     }
   };
 
   const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
+    try {
+      if (waveform) {
+        waveform.microphone.stop();
+        setIsRecording(false);
+      }
+    } catch (error) {
+      console.error("Erro ao parar a gravação:", error);
     }
   };
 
@@ -63,16 +41,19 @@ const AudioRecorder = () => {
       container: "#waveform",
       waveColor: "blue",
       progressColor: "purple",
-      width: 200,
-      height: 100,
-      barWidth: 6,
-      barGap: 3,
-      barRadius: 4,
+      barWidth: 1, // Aumente o valor do barWidth para barras mais espessas
+      barHeight: 2, // Defina a altura das barras
+      barGap: 2, // Defina o espaçamento entre as barras
+      barRadius: 2, // Defina o raio das barras
       plugins: [
         MicrophonePlugin.create({
           container: "#mic",
-          waveColor: "purple",
-          visualSetting: "frequencyBars"
+          visualSetting: "frequencyBars", // Use "frequencyBars" para barras em tempo real
+          barWidth: 1, // Ajuste essas configurações para combinar com o visual do waveform
+          barHeight: 2,
+          barGap: 2,
+          barRadius: 2,
+          fftSamples: 128 // O número de amostras FFT determina a sensibilidade
         })
       ]
     });

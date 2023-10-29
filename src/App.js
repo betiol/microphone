@@ -23,6 +23,7 @@ const App = () => {
       )}
 
       <Button onClick={() => setAudioUrl(null)}>Limpar</Button>
+      <div id="waveform"></div>
     </div>
   );
 };
